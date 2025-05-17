@@ -40,4 +40,4 @@ jobs:
           # Navigate and start
           cd /home/azureuser/app
           npm install
-          sudo nohup node index.js > app.log 2>&1 &
+          sudo nohup node server.js > app.log 2>&1 &
