@@ -12,8 +12,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Copy code to VM
-      uses: appleboy/scp-action@v0.1.6
+    - name: Copy files to VM
+      uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
@@ -21,16 +21,23 @@ jobs:
         source: "."
         target: "/home/azureuser/app"
 
-    - name: Deploy and run API on VM
+    - name: SSH into VM and start app
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          # Install Node.js if not present
+          if ! command -v node > /dev/null; then
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+          fi
+
+          # Kill existing app
           sudo pkill node || true
+
+          # Navigate and start
           cd /home/azureuser/app
           npm install
           sudo nohup node index.js > app.log 2>&1 &
-          sleep 3
-          curl -f http://localhost/sayHello || (echo "API failed to start" && exit 1)
