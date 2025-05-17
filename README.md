@@ -79,7 +79,7 @@ Once you push to master, GitHub Actions will run.
 
 **After successful deployment, open:**
 ```bash
-   http://20.62.250.175/sayHello
+   http://your_vm_ip/sayHello
   ```
 **Expected response:**
 ```json
